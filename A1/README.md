@@ -8,16 +8,20 @@ A1/
 ├── app/
 │   └── (empty - for application code)
 ├── code/
-│   ├── 01 - Word2Vec (Skipgram) from Scratch.ipynb
-│   ├── 02 - Word2Ve (Negative Sampling) from Scratch.ipynb
-│   ├── 03 - GloVe from Scratch.ipynb
-│   └── 04 - GloVe (Gensim).ipynb
+│   ├── a1.ipynb
+│   ├──class/
+│   │   ├── 01 - Word2Vec (Skipgram) from Scratch.ipynb
+│   │   ├── 02 - Word2Ve (Negative Sampling) from Scratch.ipynb
+│   │   ├── 03 - GloVe from Scratch.ipynb
+│   │   └── 04 - GloVe (Gensim).ipynb
+├── data/ (data used in model training)
+├── model/ (pickled models)
 └── resources/
     └── A1_That_s_What_I_LIKE.pdf
 ```
 
 
-## Theory Behind
+## Theory Behind (as tutored by AI)
 
 J(θ) - The loss function (objective to minimize):
 
