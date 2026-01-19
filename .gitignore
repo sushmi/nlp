@@ -9,5 +9,5 @@ wheels/
 # Virtual environments
 .venv
 
-# Skip big model files 
-A1/model/GloveGensim.pkl
+# Skip model files 
+A1/model/*.pkl
