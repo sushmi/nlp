@@ -3,16 +3,22 @@ from dash import Dash, html, dcc, Input, Output, State
 import numpy as np
 import pickle
 from heapq import nlargest
+import os
+
+# Get the directory where this script is located
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_DIR = os.path.join(SCRIPT_DIR, '..', 'model')
 
 embedding_dicts = {}
 
 for model_name in ['GloVe', 'Skipgram', 'SkipgramNegSampling']:
-    file_path = f'../model/embed_{model_name}.pkl'
+    file_path = os.path.join(MODEL_DIR, f'embed_{model_name}.pkl')
     
     with open(file_path, 'rb') as pickle_file:
         embedding_dicts[model_name] = pickle.load(pickle_file)
 
-with open('GloVeGensim.pkl', 'rb') as model_file:
+gensim_path = os.path.join(MODEL_DIR, 'GloVeGensim.pkl')
+with open(gensim_path, 'rb') as model_file:
     model_gensim = pickle.load(model_file)
 
 def cosine_similarity(A, B):
@@ -107,7 +113,14 @@ app.layout = html.Div([
 ])
 
 # For displaying the search results
-mapping = {
+# Map dropdown values to dictionary keys and display names
+model_key_mapping = {
+    'skipgram_negative': 'SkipgramNegSampling',
+    'glove': 'GloVe',
+    'skipgram': 'Skipgram'
+}
+
+display_mapping = {
     'skipgram_negative': 'Skipgram (Negative)',
     'glove': 'GloVe',
     'skipgram': 'Skipgram'
@@ -126,14 +139,16 @@ def search(n_clicks, query, model):
         if not model:
             return html.Div("Please select a model from the dropdown.", style={'color': 'red'})
         
-        embeddings = embedding_dicts.get(model) # using the chosen model
+        # Map dropdown value to the actual dictionary key
+        model_key = model_key_mapping.get(model)
+        embeddings = embedding_dicts.get(model_key) # using the chosen model
         results = similarWords(query, embeddings)
         return html.Div([
-            html.H4(f"Results for '{query}' using model '{mapping[model]}':"),
+            html.H4(f"Results for '{query}' using model '{display_mapping[model]}':"),
             html.Ul([html.Li(result) for result in results], style={'list-style-type': 'none'})
         ])
     return html.Div("Enter a query and select a model to see results.", style={'color': 'gray'})
 
 # Running the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run(debug=True)
