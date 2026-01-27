@@ -6,7 +6,7 @@
 A1/
 ├── README.md
 ├── app/
-│   └── (empty - for application code)
+│   └── app.py - application code
 ├── code/
 │   ├── a1.ipynb
 │   ├──class/
@@ -27,3 +27,21 @@ A1/
 ![Skipgram NEG model search results](img/skipgram_neg_result.png)
 
 ![GloVe model search results](img/glove_result.png)
+
+
+
+[1.1 Fundamental - Word2Vec][word2vec_resource]
+
+
+
+[word2vec_resource]: https://www.youtube.com/watch?v=KwjrTVaQKjA&t=6s
+
+
+## How to run app
+
+1. Run the jupyter notebook [a1.ipynb](code/a1.ipynb) to create the models 
+
+2. Execute app.py 
+``` bash
+uv run app/app.py 
+```
