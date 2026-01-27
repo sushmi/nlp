@@ -66,15 +66,57 @@ GitHub usually rejects large files (over 100 MB) or files that are in your .giti
 If you tracked with Git LFS after the file was already committed (or staged), Git is still trying to push the large file as a normal object, which GitHub rejects.
 
 How to fix:
-1. Unstage and remove the large file from Git history:
+0. Unstage and remove the large file from Git history:
 
 ```
 git rm --cached path/to/best-val-lstm_lm.pt
 ```
+1. If you have already committed to remote , you need to use lfs migrate
 
-2. Re-add the file (now tracked by LFS):
+1.1 Install if you don't have lfs
 
-3. Commit the change:
+```
+brew install git-lfs
+```
+1.2 Add to git
 
-4. Push again:
+```
+git lfs install
+```
 
+1.3 Use lfs migrate
+
+1.3.1 Track the file type with LFS
+
+```
+git lfs track "*.pt"
+git add .gitattributes
+```
+1.3.2 Migrate all existing .pt files in your repo history to LFS
+
+```
+git lfs migrate import --include="*.pt"
+```
+
+This rewrites your repo history so all .pt files are stored in LFS, not in normal Git.
+
+1.3.3 Force-push the rewritten history to GitHub
+
+```
+git push --force origin main
+```
+
+1.3.4. Clean up old local backups (optional)
+
+```
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+```
+
+1.3.5. Tell collaborators to re-clone the repo
+
+Because history changed, others should:
+
+- Backup their work
+- Delete their local repo
+- Clone fresh from GitHub
