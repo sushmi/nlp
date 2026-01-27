@@ -14,4 +14,3 @@ A1/model/*.pkl
 
 # Jupyter Notebook checkpoints
 *.ipynb_checkpoints/
-*.pt

@@ -51,3 +51,30 @@ print(f"Using device: {device}")
 ```
 
 PyTorch Version: Requires PyTorch 1.12+ (MPS support added)
+
+
+# Troubleshoot
+
+##  Add Large files onto Git
+
+```
+remote: error: File A2/code/class/best-val-lstm_lm.pt is 294.44 MB; this exceeds GitHub's file size limit of 100.00 MB
+```
+
+GitHub usually rejects large files (over 100 MB) or files that are in your .gitignore. model files are generally larger than 100 MB .
+
+If you tracked with Git LFS after the file was already committed (or staged), Git is still trying to push the large file as a normal object, which GitHub rejects.
+
+How to fix:
+1. Unstage and remove the large file from Git history:
+
+```
+git rm --cached path/to/best-val-lstm_lm.pt
+```
+
+2. Re-add the file (now tracked by LFS):
+
+3. Commit the change:
+
+4. Push again:
+
