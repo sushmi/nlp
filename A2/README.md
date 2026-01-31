@@ -1,4 +1,4 @@
-# A2 : Language Model
+# Task 3 - A2 : Language Model - Web Application Development 
 
 ## Folder structure
 ```
@@ -56,23 +56,25 @@ A2/
 1. Prompt 1 : Shakespeare work related
     > Prompt used: To be, or not to be, that is the question
 
-    <img src="img/test_prompt1.png" width=600>
+    <img src="img/test_prompt1.png" width=1200>
 
 2. Prompt 2: One more test with Shakespeare work related
     > Prompt used: The sonnet opens with a prologue that sets the scene
 
-    <img src="img/test_prompt2.png" width=600>
+    <img src="img/test_prompt2.png" width=1200>
 
 3. Prompt 3 : to check missing token case 
     > Prompt used: Frankenstein is
 
-    <img src="img/test_prompt3_unk.png" width=600>
+    <img src="img/test_prompt3_unk.png" width=1200>
 
 4. Prompt 4: New creation using Shakespeare data
     > Prompt used: The meaning of life
 
-    <img src="img/test_prompt4_new_creation.png" width=600>
+    <img src="img/test_prompt4_new_creation.png" width=1200>
 
+
+# Good to know - Learnings
 
 ## Add New packages
 
