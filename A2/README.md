@@ -71,7 +71,7 @@ A2/
 4. Prompt 4: New creation using Shakespeare data
     > Prompt used: The meaning of life
 
-    <img src="img/prompt4_new_creation.png" width=1200>
+    <img src="img/test_prompt4_new_creation.png" width=1200>
 
 
 # Other Learnings
