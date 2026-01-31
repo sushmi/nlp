@@ -51,7 +51,7 @@ A2/
 - Use `safe` to render HTML code, Jinja2 blocks the dynamically created HTML code. Need to take caution to trim out html code entered by users.
 - For the same Jinja2 safety feature, <unk> is skipped, a special treatment is done to convert <unk> to `[[UNKNOWN]]`
 
-### Screenshots for 3 cases
+### Screenshots for 4 cases
 
 1. Prompt 1 : Shakespeare work related
     > Prompt used: To be, or not to be, that is the question
@@ -71,10 +71,10 @@ A2/
 4. Prompt 4: New creation using Shakespeare data
     > Prompt used: The meaning of life
 
-    <img src="img/test_prompt4_new_creation.png" width=1200>
+    <img src="img/prompt4_new_creation.png" width=1200>
 
 
-# Good to know - Learnings
+# Other Learnings
 
 ## Add New packages
 

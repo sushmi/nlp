@@ -15,6 +15,10 @@ PyTorch Word Embeddings Tutorial, Gensim's word2vec, Stanford GloVe, Spacy
 
 ## A2: Language Model
 
+LSTM Language Model 
+
+[A2 README](A2/README.md)
+
 
 # PyTorch on Apple Silicon 
 
