@@ -1,4 +1,42 @@
-# Task 3 - A2 : Language Model - Web Application Development 
+# A2 : Language Model
+
+## Task 3. Text Generation - Web Application Development - Develop a simple web application thatdemonstrates the capabilities of your language model. (2 points)
+
+1) The application should include an input box where users can type in a text prompt.
+2) Based on the input, the model should generate and display a continuation of the text. For example,
+if the input is ”Harry Potter is”, the model might generate ”a wizard in the world of Hogwarts”.
+3) Provide documentation on how the web application interfaces with the language model.
+
+### How the Web Application Interfaces with the Language Model
+
+The web application is built using Flask and provides an interactive interface for users to generate text continuations using the trained LSTM language model. Here is how the integration works:
+
+1. **User Input:** The user enters a text prompt into the input box on the web page.
+2. **Request Handling:** When the user submits the prompt, the Flask backend receives the request and processes the input.
+3. **Model Loading:** On startup, the Flask app loads the LSTM model weights from the checkpoint file (`lstm_lm_checkpoint.pt`) and the vocabulary object from the pickle file (`a2_vocab_lm.pkl`).
+4. **Tokenization:** The input prompt is tokenized using the custom `basic_english_tokenizer` to convert the text into tokens compatible with the model's vocabulary.
+5. **Numericalization:** Tokens are mapped to their corresponding indices using the loaded vocabulary.
+6. **Text Generation:** The processed input is fed into the LSTM model, which generates a sequence of output tokens based on the prompt and model parameters. The generation process uses temperature sampling for diversity and stops when an end-of-sequence token is produced or the maximum length is reached.
+7. **Decoding:** The output token indices are converted back to words using the vocabulary's index-to-token mapping.
+8. **Post-processing:** Special tokens like `<unk>` are replaced with `[[UNKNOWN]]` for clarity, and the generated text is formatted for display.
+9. **Response Rendering:** The generated text is rendered on the web page using a Jinja2 template. The `safe` filter is used to allow proper HTML formatting while ensuring user input is sanitized.
+
+#### Web Application & Language Model Architecture
+
+<img src="img/webapp_arch.png" alt="Web application architecutre">
+
+This architecture allows the web application to serve real-time text generation requests using the trained language model, providing an interactive demonstration of its capabilities.
+
+```mermaid
+flowchart LR
+    A[User Web Page<br>Input Box] --> B[Flask Server<br>app.py]
+    B --> C[Tokenizer <br> tokenizer.py]
+    C --> D[LSTM Model <br> lstm.py and checkpoint]
+    D --> E[Output Text <br> Rendered to User]
+    E --> A
+    B -.->|Loads| F[Vocabulary <br> a2_vocab_lm.pkl]
+    B -.->|Loads| G[Model Checkpoint <br> lstm_lm_checkpoint.pt]
+```
 
 ## Folder structure
 ```
@@ -25,18 +63,15 @@ A2/
     └── A2_Language_Model.pdf - Assignment detail
 ```
 
-## Web Application Development
-
 ### Python file list
 
-1. `app.py` – Main entry point for the web app. Handles routing, user input, model loading, and text generation logic. 
-
-        Run with 
-        ```sh
-        uv run app.py 
-        # or 
-        python app.py
-        ```
+1. `app.py` – Main entry point for the web app. Handles routing, user input, model loading, and text generation logic. Run python sever with: 
+        
+```sh
+    uv run app.py 
+    # or 
+    python app.py
+```
 
 2. `lstm.py` – Contains the LSTMLanguageModel class, which defines the neural network architecture for the language model.
 3. `tokenizer.py` – Implements the basic_english_tokenizer function, a custom tokenizer compatible with your codebase and Python 3.13+.
@@ -72,150 +107,3 @@ A2/
     > Prompt used: The meaning of life
 
     <img src="img/test_prompt4_new_creation.png" width=1200>
-
-
-# Other Learnings
-
-## Add New packages
-
-1. datasets (Hugging Face) — Most Popular for NLP
-
-```bash
-uv add datasets
-```
-
-What it provides:
-- Huge collection of NLP datasets
-- Easy streaming for large datasets
-- Works seamlessly with transformers
-
-2. torch is PyTorch — one of the most popular deep learning frameworks.
-
-```
-uv add torch
-```
-
-What it provides:
-- Tensors	GPU-accelerated arrays (like NumPy but on GPU)
-- Autograd	Automatic differentiation for gradients
-- Neural Networks	torch.nn module for building models
-- Optimizers	SGD, Adam, etc. in torch.optim
-- GPU Support	CUDA acceleration with .to('cuda')
-
-
-## Troubleshoot
-
-### TypeError: build_vocab_from_iterator() got an unexpected keyword argument 'min_freq'
-
-It's happened because `torchtext` version is 0.6.0. `min_freq` is only available in v0.12+
-
-⚠️ Important Note on torchtext:
-torchtext is deprecated! As of PyTorch 2.1+ (late 2023), torchtext is no longer actively maintained.
-
-Upgrading  `torchtext` won't work if you have Python v3.13. Newer version of `torchtext` is available only for Python v 3.12 or below.
-
-```
-torchtext-0.18.0-cp312-cp312-macosx_11_0_arm64.whl
-    │        │      │     │         │
-    │        │      │     │         └── Platform (macOS ARM64)
-    │        │      │     └── Python ABI
-    │        │      └── CPython 3.12
-    │        └── Version
-    └── Package name
-```
-
-What is a Wheel?
-A wheel (.whl) is Python's pre-built package format — like a ready-to-install app vs. building from source code.
-
-|Tag |	Meaning|
-| --- | --- | --- |
-|cp312|	CPython 3.12|
-|cp313|	CPython 3.13|
-|macosx_11_0_arm64|	macOS 11+ on Apple Silicon|
-|manylinux|	Works on most Linux distros|
-|win_amd64|	Windows 64-bit|
-|py3-none-any|	Pure Python, works everywhere |
-
-
-PyTorch deprecated torchtext because:
-
-- Hugging Face won the NLP tooling war 
-- Maintenance burden - Maintaining two ecosystems wasn't worth it
-- They assumed everyone uses transformers now
-- Features duplicated by better libraries
-
-
-Solution:
-1. Pin your python to v3.12
-2. Refactor the code not to use torchtext 
-
-## How to execute python notebook 
-
-```bash
-uv run jupyter execute "code/class/LSTM LM.ipynb"
-```
-
-
-## Using GPU high and hot
-
-Monitor GPU usage: 
-
-```
-sudo powermetrics --samplers gpu_power -i 1000 -n 1
-
-# Continuous monitoring
-sudo powermetrics --samplers gpu_power -i 1000
-```
-
-GPU info
-```
-system_profiler SPDisplaysDataType
-```
-
-Powermetrics GPU Output Explained
-
-GPU HW active frequency	 -  Current GPU clock speed. Ex. 1002 MHz
-GPU HW active residency	- GPU is 100% busy (actively working) ex. 100.00%
-GPU idle residency - GPU is NOT idle (0% idle = fully utilized) Ex. 0.00%
-GPU Power - Watts being consumed Ex. 19304 mW => ~19.3 Watts being used
-
-```
-GPU HW active frequency: 1002 MHz
-GPU HW active residency: 100.00% (338 MHz:   0% 618 MHz:   0% 796 MHz:   0% 924 MHz:  41% 952 MHz:   0% 1056 MHz:  59% 1062 MHz:   0% 1182 MHz:   0% 1182 MHz:   0% 1312 MHz:   0% 1242 MHz:   0% 1380 MHz:   0% 1326 MHz:   0% 1470 MHz:   0% 1578 MHz:   0%)
-GPU SW requested state: (P1 :   0% P2 :   0% P3 :   0% P4 :   0% P5 :   0% P6 :   0% P7 :   0% P8 :   0% P9 :   0% P10 : 100% P11 :   0% P12 :   0% P13 :   0% P14 :   0% P15 :   0%)
-GPU SW state: (SW_P1 :   0% SW_P2 :   0% SW_P3 :   0% SW_P4 :  41% SW_P5 :  59% SW_P6 :   0% SW_P7 :   0% SW_P8 :   0% SW_P9 :   0% SW_P10 :   0% SW_P11 :   0% SW_P12 :   0% SW_P13 :   0% SW_P14 :   0% SW_P15 :   0%)
-GPU idle residency:   0.00%
-GPU Power: 19304 mW
-```
-
-1. GPU Power (Most Important)
-```
-GPU Power: 19304 mW = 19.3 Watts
-```
-Low (idle): 0-5W
-Medium (light use): 5-15W
-High (ML training): 15-30W ← You are here
-Max (M3 Pro): ~40W
-
-2. GPU HW active residency
-```
-100.00% = GPU is fully busy
-  0.00% = GPU is completely idle
-```
-Your 100% means GPU is working hard (training the model).
-
-3. Frequency breakdown
-
-```
-924 MHz: 41% | 1056 MHz: 59%
-```
-
-GPU spent 41% of time at 924 MHz and 59% at 1056 MHz.
-Higher MHz = more performance = more power = more heat.
-
-
-```bash
-brew install --cask stats
-```
-
-
