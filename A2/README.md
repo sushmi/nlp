@@ -4,19 +4,75 @@
 ```
 A2/
 ├── app/
-│   └── app.py - Application code
+│   └── app.py - Web Application code using Flask framework 
+│   └── lstm.py - LSTMLanguageModel class
+│   └── tokenizer.py - basic_english_tokenizer function
+│   └── vocab.py - Vocab class
+├── model   - models and checkpoint location
+│   └── a2_vocab_lm.pkl - Vocab pickle file
+│   └── lstm_lm_checkpoint.pt - Checkpoint for LSTM model
 ├── code
 │   └── class - notebooks from NLP class
 │       ├── figures
 │       │   └── LM.png
 │       └── LSTM LM.ipynb
-├── data/ - data used in training and test
+├── data/  
+│   └── gutenberg_pg100.txt - Shakespeare's 44 creation in raw text file
 ├── img/ - images 
 ├── READING_NOTES.md - extra search on topics
 ├── README.md
 └── resoruces
     └── A2_Language_Model.pdf - Assignment detail
 ```
+
+## Web Application Development
+
+### Python file list
+
+1. `app.py` – Main entry point for the web app. Handles routing, user input, model loading, and text generation logic. 
+
+        Run with 
+        ```sh
+        uv run app.py 
+        # or 
+        python app.py
+        ```
+
+2. `lstm.py` – Contains the LSTMLanguageModel class, which defines the neural network architecture for the language model.
+3. `tokenizer.py` – Implements the basic_english_tokenizer function, a custom tokenizer compatible with your codebase and Python 3.13+.
+4. `vocab.py` – Defines the Vocab class for vocabulary management, including token-to-index and index-to-token mappings, and special token handling.
+
+### Model and Checkpoints: 
+
+`A2/model/` - Model is stored as checkpoints and later checkpoint is loaded and built model to serve request from users.
+
+### Security notes:
+
+- Use `safe` to render HTML code, Jinja2 blocks the dynamically created HTML code. Need to take caution to trim out html code entered by users.
+- For the same Jinja2 safety feature, <unk> is skipped, a special treatment is done to convert <unk> to `[[UNKNOWN]]`
+
+### Screenshots for 3 cases
+
+1. Prompt 1 : Shakespeare work related
+    > Prompt used: To be, or not to be, that is the question
+
+    <img src="img/test_prompt1.png" width=600>
+
+2. Prompt 2: One more test with Shakespeare work related
+    > Prompt used: The sonnet opens with a prologue that sets the scene
+
+    <img src="img/test_prompt2.png" width=600>
+
+3. Prompt 3 : to check missing token case 
+    > Prompt used: Frankenstein is
+
+    <img src="img/test_prompt3_unk.png" width=600>
+
+4. Prompt 4: New creation using Shakespeare data
+    > Prompt used: The meaning of life
+
+    <img src="img/test_prompt4_new_creation.png" width=600>
+
 
 ## Add New packages
 
