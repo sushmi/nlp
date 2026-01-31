@@ -23,10 +23,6 @@ The web application is built using Flask and provides an interactive interface f
 
 #### Web Application & Language Model Architecture
 
-<img src="img/webapp_arch.png" alt="Web application architecutre">
-
-This architecture allows the web application to serve real-time text generation requests using the trained language model, providing an interactive demonstration of its capabilities.
-
 ```mermaid
 flowchart LR
     A[User Web Page<br>Input Box] --> B[Flask Server<br>app.py]
@@ -37,6 +33,13 @@ flowchart LR
     B -.->|Loads| F[Vocabulary <br> a2_vocab_lm.pkl]
     B -.->|Loads| G[Model Checkpoint <br> lstm_lm_checkpoint.pt]
 ```
+<!-- Img  
+<img src="img/webapp_arch.png" alt="Web application architecutre">
+-->
+
+This architecture allows the web application to serve real-time text generation requests using the trained language model, providing an interactive demonstration of its capabilities.
+
+
 
 ## Folder structure
 ```
