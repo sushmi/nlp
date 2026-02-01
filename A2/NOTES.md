@@ -339,5 +339,26 @@ Higher MHz = more performance = more power = more heat.
 brew install --cask stats
 ```
 
+## What is tempearature ?
+
+In language models, "temperature" is a parameter that controls the randomness of predictions during text generation.
+
+- Low temperature (< 1.0): The model becomes more confident and conservative, favoring high-probability words. Output is more predictable and repetitive.
+- High temperature (> 1.0): The model becomes more random and creative, allowing less likely words. Output is more diverse but can be less coherent.
+
+Mathematically, temperature $T$ is used to scale the logits before applying softmax:
+
+$$
+P_i = \frac{\exp\left(\frac{z_i}{T}\right)}{\sum_j \exp\left(\frac{z_j}{T}\right)}
+$$
+
+where $z_i$ are the logits. Lower $T$ sharpens the distribution; higher $T$ flattens it.
 
 
+<b>Summary:</b>
+
+- Temperature = 1.0: normal sampling
+- Temperature < 1.0: more deterministic
+- Temperature > 1.0: more random
+
+It helps balance between creativity and coherence in generated text.

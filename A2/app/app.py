@@ -1,4 +1,5 @@
 
+import os
 from flask import Flask, render_template_string, request
 import torch
 from lstm import LSTMLanguageModel
@@ -13,6 +14,9 @@ device_type = 'cpu'
 device = torch.device('cpu')
 model_path = "../model"
 vocab_filename = "a2_vocab_lm.pkl"
+print("Current app path:", os.getcwd())
+
+print(f"Loading vocabulary from {model_path}/{vocab_filename}...")
 
 # Loading the vocabulary from the saved file
 with open(f'{model_path}/{vocab_filename}', 'rb') as f:
