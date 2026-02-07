@@ -29,14 +29,6 @@ A1/
 ![GloVe model search results](img/glove_result.png)
 
 
-
-[1.1 Fundamental - Word2Vec][word2vec_resource]
-
-
-
-[word2vec_resource]: https://www.youtube.com/watch?v=KwjrTVaQKjA&t=6s
-
-
 ## How to run app
 
 1. Run the jupyter notebook [a1.ipynb](code/a1.ipynb) to create the models 

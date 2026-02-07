@@ -16,8 +16,13 @@ dependencies = [
     "nltk>=3.9.2",
     "numpy>=2.4.1",
     "pandas>=2.3.3",
+    "pip>=26.0.1",
     "scikit-learn>=1.8.0",
+    "sentencepiece>=0.2.1",
+    "spacy>=3.8.11",
     "spicy>=0.16.0",
     "torch>=2.9.1",
+    "torchdata>=0.11.0",
     "torchtext>=0.6.0",
+    "transformers>=5.1.0",
 ]
