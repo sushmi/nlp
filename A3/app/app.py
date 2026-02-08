@@ -30,6 +30,24 @@ class GeneralAttention(nn.Module):
         return torch.softmax(attention, dim=1)
 
 
+class AdditiveAttention(nn.Module):
+    """Additive (Bahdanau) Attention"""
+    def __init__(self, enc_hid_dim, dec_hid_dim):
+        super().__init__()
+        self.W1 = nn.Linear(enc_hid_dim, dec_hid_dim)
+        self.W2 = nn.Linear(dec_hid_dim, dec_hid_dim)
+        self.v = nn.Linear(dec_hid_dim, 1, bias=False)
+        
+    def forward(self, hidden, encoder_outputs, mask):
+        src_len = encoder_outputs.shape[0]
+        hidden = hidden.unsqueeze(1).repeat(1, src_len, 1)
+        encoder_outputs = encoder_outputs.permute(1, 0, 2)
+        energy = torch.tanh(self.W1(encoder_outputs) + self.W2(hidden))
+        attention = self.v(energy).squeeze(2)
+        attention = attention.masked_fill(mask, -1e10)
+        return torch.softmax(attention, dim=1)
+
+
 class Encoder(nn.Module):
     def __init__(self, input_dim, emb_dim, hid_dim, dropout):
         super().__init__()
@@ -197,18 +215,18 @@ def load_models():
     # Model parameters (must match training)
     input_dim = len(vocab_src)
     output_dim = len(vocab_trg)
-    emb_dim = 256
-    hid_dim = 512
+    emb_dim = 64
+    hid_dim = 256
     dropout = 0.5
     
-    # Build model
-    attn = GeneralAttention(hid_dim * 2, hid_dim)
+    # Build model (using Additive Attention)
+    attn = AdditiveAttention(hid_dim * 2, hid_dim)
     enc = Encoder(input_dim, emb_dim, hid_dim, dropout)
     dec = Decoder(output_dim, emb_dim, hid_dim, dropout, attn)
     model = Seq2SeqPackedAttention(enc, dec, PAD_IDX, device)
     
     # Load trained weights
-    model_file = os.path.join(vocab_path, "Seq2SeqPackedAttention.pt")
+    model_file = os.path.join(vocab_path, "Seq2SeqPackedAttention_additive.pt")
     try:
         model.load_state_dict(torch.load(model_file, map_location=device, weights_only=True))
         model.to(device)
