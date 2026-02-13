@@ -19,7 +19,7 @@ Comparison between General and Additive:
 
 Since accuracy, inference speed and throughput for Additive is better, Additive wins these performace metrics. 
 
-Accuracy , inference speed or throughput is related to user experience, <strong> Additive model is recommended.<strong>
+**Recommendation:** Additive attention is recommended as it provides better accuracy, faster inference speed, and higher throughput—key factors that directly impact user experience.
 
 ## Performance Plots showing training and validation loss
 
@@ -89,7 +89,8 @@ In summary, Model did not learn proper attention - unable to capture semantic me
 ### Overview
 
 A Flask-based web application was developed to showcase the English-to-Nepali machine translation model. The application provides an interactive interface where users can input English text and receive Nepali translations in real-time.
-(Note: templating is done using vibe coding..)
+
+(Disclaimer: templating is done using vibe coding..)
 
 **Screenshots of the Web Application:**
 
@@ -203,7 +204,7 @@ A3/
 │   └── template/index.html - Vibe coding done for template
 ├── model   - models generated are saved here. models are not pushed to remote as push get slower. 
 ├── code
-│   └── A3.ipynb - Assignment solutions
+│   └── a3.ipynb - Assignment solutions
 ├── data/  
 │   └── 
 ├── imgs/ - images and screenshots
