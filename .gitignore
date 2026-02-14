@@ -15,3 +15,9 @@ A1/model/*.pkl
 
 # Jupyter Notebook checkpoints
 *.ipynb_checkpoints/
+
+# Ignore .env
+.env
+
+# skip data files
+data/

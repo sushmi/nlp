@@ -1,8 +1,5 @@
 # Assignment NLP
 
-Course: http://www.chaklam.com/nlp 
-
-
 ## A1: That’s What I LIKE
 
 Topics Related:
@@ -18,6 +15,17 @@ PyTorch Word Embeddings Tutorial, Gensim's word2vec, Stanford GloVe, Spacy
 LSTM Language Model 
 
 [A2 README](A2/README.md)
+
+
+## A3: Make Your Own Machine Translation Language
+
+[A3 Readme](A3/README.md)
+
+
+## A4: Code your own BERT
+
+[A4 Readme](A4/README.md)
+
 
 
 # PyTorch on Apple Silicon 
