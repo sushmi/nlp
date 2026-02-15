@@ -327,3 +327,39 @@ nlp.add_pipe("sentencizer")
 doc = nlp("Your text here")
 sentences = list(doc.sents)
 ```
+
+
+## Performance Optimization
+
+### Make evaluation step faster
+
+The main bottleneck is calling make_batch() 50 times inside the loop — that's all CPU work (random sampling, tokenizing, masking, padding). Optimize by pre-generating all batches first, then running a tight GPU inference loop with non-blocking transfers.
+
+1. Separated CPU and GPU work — all make_batch() calls happen first in a pre-generation loop, then GPU inference runs in a tight loop without CPU bottlenecks interleaved
+
+2. Non-blocking transfers — .to(device, non_blocking=True) allows async CPU→GPU memory transfers that overlap with computation
+
+3. Faster argmax — replaced .data.max(2)[1] with .argmax(dim=2) which is more efficient when you only need the indices (skips computing the max values)
+
+4. Added timing — reports total inference time and per-batch latency so you can see the GPU speedup
+
+The main bottleneck was make_batch() running on CPU inside the inference loop, forcing the GPU to idle between batches. Now the GPU gets fed batches back-to-back.
+
+### Optimize make_batch()
+
+The biggest bottleneck is the while loop randomly picking two indices and hoping they're consecutive for positive pairs. With ~1.8M sentences, the chance of tokens_b_index == tokens_a_index + 1 by random chance is about 1 in 1.8M — so it spins millions of times to find just 3 positive pairs!
+
+The fix: deliberately construct positive pairs (pick index, use index+1) and negative pairs (pick two non-consecutive indices) instead of randomly sampling and checking.
+
+
+Changes to optimize:
+
+1. Eliminated the random search bottleneck — The old code randomly picked two indices and checked if they were consecutive. With ~1.8M sentences, the probability of a random hit was ~1/1.8M, so it spun millions of iterations just to find 3 positive pairs. Now positive pairs are constructed directly by picking idx and using idx+1.
+
+2. Fixed the masking probability bug — The original code called random() twice independently (if random() < 0.1 then elif random() < 0.8), which skewed the actual probabilities. Now it calls random() once and uses proper thresholds: < 0.1 (10% random), < 0.9 (80% mask), else keep.
+
+3. Pre-cached special token IDs — word2id['[CLS]'] etc. are looked up once instead of every iteration.
+
+4. Skips over-length sequences — Added a guard so pairs exceeding max_len are skipped instead of producing broken padding.
+
+5. Simplified random token replacement — Uses randint(4, vocab_size - 1) directly instead of the roundtrip through id2word and back.
