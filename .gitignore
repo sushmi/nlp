@@ -21,3 +21,6 @@ A1/model/*.pkl
 
 # skip data files
 data/
+
+# skip scratch files
+scratch/
