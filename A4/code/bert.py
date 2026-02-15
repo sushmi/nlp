@@ -30,7 +30,7 @@ def get_attn_pad_mask(seq_q, seq_k, device):
 class EncoderLayer(nn.Module):
     def __init__(self, n_heads, d_model, d_ff, d_k, device):
         super(EncoderLayer, self).__init__()
-        self.enc_self_attn = MultiHeadAttention(n_heads, d_model, d_k, device)
+        self.enc_self_attn = MultiHeadAttention(n_heads, d_model, d_k)
         self.pos_ffn       = PoswiseFeedForwardNet(d_model, d_ff)
 
     def forward(self, enc_inputs, enc_self_attn_mask):
@@ -39,43 +39,43 @@ class EncoderLayer(nn.Module):
         return enc_outputs, attn
     
 class ScaledDotProductAttention(nn.Module):
-    def __init__(self, d_k, device):
+    def __init__(self, d_k):
         super(ScaledDotProductAttention, self).__init__()
-        self.scale = torch.sqrt(torch.FloatTensor([d_k])).to(device)
+        self.d_k = d_k
 
     def forward(self, Q, K, V, attn_mask):
-        scores = torch.matmul(Q, K.transpose(-1, -2)) / self.scale # scores : [batch_size x n_heads x len_q(=len_k) x len_k(=len_q)]
+        import numpy as np
+        scores = torch.matmul(Q, K.transpose(-1, -2)) / np.sqrt(self.d_k) # scores : [batch_size x n_heads x len_q(=len_k) x len_k(=len_q)]
         scores.masked_fill_(attn_mask, -1e9) # Fills elements of self tensor with value where mask is one.
         attn = nn.Softmax(dim=-1)(scores)
         context = torch.matmul(attn, V)
-        return context, attn 
-    
+        return context, attn
+
 class MultiHeadAttention(nn.Module):
-    def __init__(self, n_heads, d_model, d_k, device):
+    def __init__(self, n_heads, d_model, d_k):
         super(MultiHeadAttention, self).__init__()
         self.n_heads = n_heads
-        self.d_model = d_model
         self.d_k = d_k
-        self.d_v = d_k
+        self.d_v = d_k  # d_v = d_k
         self.W_Q = nn.Linear(d_model, d_k * n_heads)
         self.W_K = nn.Linear(d_model, d_k * n_heads)
-        self.W_V = nn.Linear(d_model, self.d_v * n_heads)
-        self.device = device
+        self.W_V = nn.Linear(d_model, d_k * n_heads)
+        self.linear = nn.Linear(n_heads * d_k, d_model)
+        self.norm = nn.LayerNorm(d_model)
     def forward(self, Q, K, V, attn_mask):
         # q: [batch_size x len_q x d_model], k: [batch_size x len_k x d_model], v: [batch_size x len_k x d_model]
         residual, batch_size = Q, Q.size(0)
         # (B, S, D) -proj-> (B, S, D) -split-> (B, S, H, W) -trans-> (B, H, S, W)
-        q_s = self.W_Q(Q).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)  # q_s: [batch_size x n_heads x len_q x d_k]
-        k_s = self.W_K(K).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)  # k_s: [batch_size x n_heads x len_k x d_k]
-        v_s = self.W_V(V).view(batch_size, -1, self.n_heads, self.d_v).transpose(1,2)  # v_s: [batch_size x n_heads x len_k x d_v]
+        q_s = self.W_Q(Q).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
+        k_s = self.W_K(K).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
+        v_s = self.W_V(V).view(batch_size, -1, self.n_heads, self.d_v).transpose(1,2)
 
-        attn_mask = attn_mask.unsqueeze(1).repeat(1, self.n_heads, 1, 1) # attn_mask : [batch_size x n_heads x len_q x len_k]
+        attn_mask = attn_mask.unsqueeze(1).repeat(1, self.n_heads, 1, 1)
 
-        # context: [batch_size x n_heads x len_q x d_v], attn: [batch_size x n_heads x len_q(=len_k) x len_k(=len_q)]
-        context, attn = ScaledDotProductAttention(self.d_k, self.device)(q_s, k_s, v_s, attn_mask)
-        context = context.transpose(1, 2).contiguous().view(batch_size, -1, self.n_heads * self.d_v) # context: [batch_size x len_q x n_heads * d_v]
-        output = nn.Linear(self.n_heads * self.d_v, self.d_model, device=self.device)(context)
-        return nn.LayerNorm(self.d_model, device=self.device)(output + residual), attn # output: [batch_size x len_q x d_model]
+        context, attn = ScaledDotProductAttention(self.d_k)(q_s, k_s, v_s, attn_mask)
+        context = context.transpose(1, 2).contiguous().view(batch_size, -1, self.n_heads * self.d_v)
+        output = self.linear(context)
+        return self.norm(output + residual), attn
 
 class PoswiseFeedForwardNet(nn.Module):
     def __init__(self, d_model, d_ff):
