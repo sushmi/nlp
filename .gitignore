@@ -12,6 +12,7 @@ wheels/
 # Skip model files 
 A1/model/*.pkl
 */models/
+*/model/
 
 # Jupyter Notebook checkpoints
 *.ipynb_checkpoints/

@@ -138,7 +138,7 @@ Because history changed, others should:
 
 ```sh
 
-mkdir app code data img model resources
+mkdir app code data imgages models resources
 touch README.md
 touch NOTES.md
 
