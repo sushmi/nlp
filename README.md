@@ -132,3 +132,14 @@ Because history changed, others should:
 - Backup their work
 - Delete their local repo
 - Clone fresh from GitHub
+
+
+### Create folder structure
+
+```sh
+
+mkdir app code data img model resources
+touch README.md
+touch NOTES.md
+
+```

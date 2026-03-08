@@ -3,7 +3,7 @@ name = "assignment-npl"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
     "dash>=3.3.0",
     "datasets>=4.5.0",
@@ -23,8 +23,8 @@ dependencies = [
     "sentencepiece>=0.2.1",
     "spacy>=3.8.11",
     "spicy>=0.16.0",
-    "torch>=2.9.1",
-    "torchdata>=0.11.0",
-    "torchtext>=0.6.0",
+    "torch==2.3.0",
+    "torchdata==0.9.0",
+    "torchtext==0.18.0",
     "transformers>=5.1.0",
 ]

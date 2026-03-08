@@ -24,3 +24,9 @@ data/
 
 # skip scratch files
 scratch/
+
+# skip practice files
+practice/
+
+# skip quiz files
+quiz/

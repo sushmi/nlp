@@ -270,6 +270,22 @@ Solution:
 1. Pin your python to v3.12
 2. Refactor the code not to use torchtext 
 
+TorchText was officially deprecated by PyTorch in 2023, with the last release being 0.18.0. It does not support Python 3.13.
+
+Your notebook is using torchtext 0.6.0 (a very old version) and your venv is Python 3.13 — this is likely causing issues.
+
+Your options:
+
+1. Downgrade to Python 3.11 — last version torchtext officially supported
+2. Replace torchtext functionality manually — use plain Python/PyTorch for tokenization and vocab building instead of torchtext utilities
+
+option 1 is easier. You can create a Python 3.11 venv:
+
+```bash
+uv venv --python 3.11
+uv sync
+```
+
 ## How to execute python notebook 
 
 ```bash
@@ -293,11 +309,14 @@ GPU info
 system_profiler SPDisplaysDataType
 ```
 
-Powermetrics GPU Output Explained
+Power metrics GPU Output Explained
 
 GPU HW active frequency	 -  Current GPU clock speed. Ex. 1002 MHz
+
 GPU HW active residency	- GPU is 100% busy (actively working) ex. 100.00%
+
 GPU idle residency - GPU is NOT idle (0% idle = fully utilized) Ex. 0.00%
+
 GPU Power - Watts being consumed Ex. 19304 mW => ~19.3 Watts being used
 
 ```
@@ -339,7 +358,7 @@ Higher MHz = more performance = more power = more heat.
 brew install --cask stats
 ```
 
-## What is tempearature ?
+## What is temperature ?
 
 In language models, "temperature" is a parameter that controls the randomness of predictions during text generation.
 
