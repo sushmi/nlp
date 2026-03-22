@@ -1,0 +1,122 @@
+[
+  {
+    "question": "What is a neural unit and what computation does it perform?",
+    "ground_truth_answer": "A neural unit is the building block of a neural network. It takes a set of real-valued inputs, computes a weighted sum plus a bias term z = w·x + b, applies a non-linear activation function f, and produces output y = f(z).",
+    "naive_rag_answer": "A neural unit takes a weighted sum of its inputs, including a bias term. It computes this sum to produce an output.",
+    "contextual_retrieval_answer": "A neural unit performs a weighted sum of its inputs followed by a non-linear activation function."
+  },
+  {
+    "question": "What is the bias term in a neural unit and why is it needed?",
+    "ground_truth_answer": "The bias term b is an additional scalar added to the weighted sum of inputs. It allows the unit to shift its activation threshold regardless of the input values, giving the network greater flexibility.",
+    "naive_rag_answer": "In a neural unit, the bias term is added to the weighted sum of inputs to adjust the output without changing the weights or the activation function used. It helps shift the activation curve up or down, allowing the model to better fit data points near zero or far from the origin. Without a bias term, the activation function would only consider positive inputs, potentially leading to underfitting if the data contains negative examples.",
+    "contextual_retrieval_answer": "In a neural unit, the bias term is added to the weighted sum of inputs to adjust the output without changing the overall scale of the activation function. It helps shift the activation curve up or down along the y-axis, allowing the model to better fit data points that lie far away from the origin. Without a bias term, the activation function would only respond to positive inputs, potentially leading to underfitting if the data contains negative examples."
+  },
+  {
+    "question": "What is the sigmoid activation function and what is its output range?",
+    "ground_truth_answer": "The sigmoid function is σ(z) = 1/(1+e^{-z}). It maps any real value to the range (0, 1), squashing extreme values toward 0 or 1. It is differentiable, which is useful for gradient-based learning.",
+    "naive_rag_answer": "The sigmoid activation function maps a real-valued input x to the range (0,1). It is nearly linear around zero but outputs values closer to 0 or 1 for large positive or negative inputs.",
+    "contextual_retrieval_answer": "The sigmoid activation function maps a real-valued input x to the range (0,1). It is nearly linear around zero but outliers are squashed towards 0 or 1."
+  },
+  {
+    "question": "What are the three common non-linear activation functions used in neural networks?",
+    "ground_truth_answer": "The three common non-linear activation functions are sigmoid (σ), tanh (hyperbolic tangent), and ReLU (Rectified Linear Unit). Each maps the weighted sum z to a different output range and has different properties useful in practice.",
+    "naive_rag_answer": "Sigmoid, tanh, and rectified linear unit (ReLU).",
+    "contextual_retrieval_answer": "The three common non-linear activation functions used in neural networks are the sigmoid function, the hyperbolic tangent (tanh), and the rectified linear unit (ReLU)."
+  },
+  {
+    "question": "What is the ReLU activation function and how is it defined?",
+    "ground_truth_answer": "ReLU (Rectified Linear Unit) is defined as ReLU(z) = max(0, z). It returns 0 for negative inputs and the input value itself for positive inputs. It is computationally efficient and avoids the vanishing gradient problem for positive values.",
+    "naive_rag_answer": "The ReLU activation function is a simple mathematical operation that outputs the input value if it is positive, and zero otherwise. Mathematically, it's defined as:\n\ny = ReLU(z) = max(z, 0)",
+    "contextual_retrieval_answer": "The ReLU activation function is a simple yet effective activation function that outputs zero for any negative input value and returns the input value itself for non-negative values. Mathematically, it's defined as:\n\n\\[ y = \\text{ReLU}(z) = \\max(z, 0) \\]\n\nwhere \\( z \\) is an input to the activation function, and \\( y \\) is the output."
+  },
+  {
+    "question": "What is the tanh activation function and how does it differ from sigmoid?",
+    "ground_truth_answer": "The tanh function maps inputs to the range (-1, 1) using tanh(z) = (e^z − e^{-z})/(e^z + e^{-z}). Unlike sigmoid which outputs (0,1), tanh is zero-centered, which can speed up learning since outputs are symmetric around zero.",
+    "naive_rag_answer": "The tanh activation function maps inputs into the range [-1, 1]. It's derived from the sigmoid function by applying the hyperbolic tangent transformation \\( y = \\tanh(z) = \\frac{e^z - e^{-z}}{e^z + e^{-z}} \\). This results in values between -1 and 1 instead of the traditional sigmoid's output between 0 and 1.",
+    "contextual_retrieval_answer": "The tanh activation function maps inputs into the range [-1, 1]. It's derived from the sigmoid function by scaling its output values between -1 and 1 instead of 0 and 1."
+  },
+  {
+    "question": "What is the XOR problem and why is it significant for neural networks?",
+    "ground_truth_answer": "XOR is not linearly separable — no single straight line can separate its two classes. A single-layer perceptron cannot solve XOR. This demonstrates the need for hidden layers with non-linear activation functions, which allow networks to learn non-linear decision boundaries.",
+    "naive_rag_answer": "The XOR problem involves determining whether two binary inputs will result in an output of 1 or not, which cannot be accurately computed by simple linear functions like AND or OR. This challenge highlights the limitations of single-layer perceptrons when dealing with non-linear relationships between inputs and outputs. For neural networks, solving the XOR problem demonstrates their ability to learn complex patterns beyond what perceptrons alone can achieve.",
+    "contextual_retrieval_answer": "The XOR problem is a challenge in artificial neural networks where a perceptron cannot solve the XOR logic function due to limitations in weight updates during training. It's significant because it highlights the need for non-linear activation functions like Rectified Linear Unit (ReLU), which help overcome the vanishing gradient problem and enable more complex computations beyond simple linear classifiers."
+  },
+  {
+    "question": "What is a feedforward neural network?",
+    "ground_truth_answer": "A feedforward neural network is a network where units are organised in layers — input, one or more hidden layers, and an output layer — and connections flow only forward (no cycles). Each layer applies a linear transformation followed by a non-linear activation.",
+    "naive_rag_answer": "A feedforward neural network is a type of artificial neural network where information moves in one direction, from input nodes through hidden layers to output nodes, without looping back or \"feeding\" information into earlier layers.",
+    "contextual_retrieval_answer": "A feedforward neural network is a type of multilayer network where connections between layers do not form cycles, meaning information flows through each layer sequentially without looping back to earlier layers."
+  },
+  {
+    "question": "What is backpropagation and what role does it play in training?",
+    "ground_truth_answer": "Backpropagation is an algorithm for computing the gradient of the loss with respect to every weight in the network. It applies the chain rule to propagate error signals from the output layer backward through each layer, enabling gradient descent to update all weights efficiently.",
+    "naive_rag_answer": "Backpropagation is an algorithm used in training neural networks. It calculates how changes in weights affect the error at each layer, allowing adjustments to improve model performance on tasks like language modeling or classification.",
+    "contextual_retrieval_answer": "Backpropagation is an algorithm used in training artificial neural networks. It calculates how changes in weights affect the error at each layer, allowing adjustments to improve model performance over time."
+  },
+  {
+    "question": "What is gradient descent and how are weights updated during training?",
+    "ground_truth_answer": "Gradient descent is an optimisation algorithm that iteratively moves weights in the direction that reduces the loss. Each weight is updated as w ← w − η·(∂L/∂w), where η is the learning rate and ∂L/∂w is the gradient of the loss with respect to that weight.",
+    "naive_rag_answer": "Gradient descent is an optimization algorithm used to minimize the cost function in machine learning. During training, weights are updated iteratively based on the gradients of the loss function with respect to these weights. Specifically, at each iteration, a small fraction of the weight updates are randomly selected according to a probability distribution defined by the learning rate. This process helps adjust the weights towards minimizing the loss, thereby improving the model's performance.",
+    "contextual_retrieval_answer": "Gradient descent is an optimization algorithm used in machine learning to minimize the cost function by iteratively adjusting the weights and biases of a neural network. During training, weights are updated based on the gradients computed during backpropagation. Specifically, at each iteration of training (or mini-batch update when using mini-batch gradient descent), a probability \\(p\\) is chosen, and for each unit, its output is replaced with zero with this probability, while the rest of the outputs are renormalized. This process helps in minimizing the error between the predicted and actual outputs."
+  },
+  {
+    "question": "What is the learning rate and why does its choice matter?",
+    "ground_truth_answer": "The learning rate η is a hyperparameter controlling the step size during gradient descent. A learning rate that is too small leads to slow convergence, while one that is too large can cause the loss to oscillate or diverge, making the choice of learning rate critical to training stability.",
+    "naive_rag_answer": "The learning rate determines the step size taken during weight updates in gradient descent. Its optimal value is often determined through experimentation or tuning on a development set rather than directly via gradient descent on the training set. A poorly chosen learning rate can lead to slow convergence or even divergence of the optimization process.",
+    "contextual_retrieval_answer": "The learning rate determines the step size at which the weights are updated during the optimization process. Its choice matters because it affects the speed and stability of convergence. A too small learning rate can slow down the training process, while a too large learning rate may cause overshooting and instability. Optimal learning rates need to be determined through experimentation or tuning based on validation performance."
+  },
+  {
+    "question": "What is dropout regularisation and why is it used?",
+    "ground_truth_answer": "Dropout is a regularisation technique where, during training, each unit is independently set to zero with probability p. This prevents co-adaptation of neurons and reduces overfitting by forcing the network to learn more robust features.",
+    "naive_rag_answer": "Dropout is a form of regularization used to prevent overfitting in neural networks. It works by randomly dropping (or \"dropping out\") a subset of neurons during training, forcing them to learn more robust features. This helps generalize better on unseen data.",
+    "contextual_retrieval_answer": "Dropout is a form of regularization used in neural networks to prevent overfitting. It works by randomly dropping (setting to zero) a fraction of neurons during training, which helps improve generalization to new data."
+  },
+  {
+    "question": "What is the softmax function and when is it used in neural networks?",
+    "ground_truth_answer": "Softmax normalises a vector of real values into a probability distribution that sums to 1: softmax(z_i) = e^{z_i}/Σ_j e^{z_j}. It is used in the output layer for multi-class classification, turning raw scores (logits) into class probabilities.",
+    "naive_rag_answer": "The softmax function is defined as Pd\nj=1 exp(z j)\n1 ≤i ≤d\nand is used in neural networks between 0 and 1 and sums to 1, typically applied after an activation function like the sigmoid in the output layer of a multi-class classification problem.",
+    "contextual_retrieval_answer": "The softmax function is defined as Pd\nj=1 exp(z j)\n1 ≤i ≤d\nand is used in neural networks between 0 and 1 and sums to 1, typically applied after an activation function like the sigmoid or tanh to convert output probabilities into a probability distribution across multiple classes."
+  },
+  {
+    "question": "What is cross-entropy loss and why is it preferred for classification?",
+    "ground_truth_answer": "Cross-entropy loss measures the dissimilarity between the predicted probability distribution and the true label distribution: L = −Σ y_i log(ŷ_i). It is preferred for classification because it penalises confident wrong predictions heavily and its gradient with softmax is simple (ŷ − y).",
+    "naive_rag_answer": "Cross-entropy loss is a measure of how well the model's predictions match the true labels. It is commonly used in binary classifiers like logistic regression and neural networks. This loss function calculates the difference between the predicted probabilities (ˆy) and the actual outcomes (y), specifically focusing on the correct class. Cross-entropy loss is preferred because it directly penalizes incorrect classifications by assigning higher weights to misclassifications closer to the decision boundary, making it effective for optimizing the model's performance in classification tasks.",
+    "contextual_retrieval_answer": "Cross-entropy loss is a measure of how well a model's predictions match the true labels. It is commonly used in binary classifiers where the output is modeled by a sigmoid function. This loss function is preferred because it directly measures the discrepancy between the predicted probabilities and the actual outcomes, making it effective for tasks like sentiment analysis and natural language processing."
+  },
+  {
+    "question": "What is a computation graph and how is it used in neural network training?",
+    "ground_truth_answer": "A computation graph is a directed acyclic graph representing the sequence of operations that compute the output from the input. During backpropagation, the graph is traversed in reverse to efficiently compute gradients using the chain rule at each node.",
+    "naive_rag_answer": "A computation graph represents the operations performed by a neural network during forward propagation. It allows tracking the flow of data through the network from input to output. In training, gradients are computed based on this graph to update weights iteratively. Backward differentiation (error backpropagation) calculates these gradients by propagating errors backwards through the network, adjusting parameters to minimize loss.",
+    "contextual_retrieval_answer": "A computation graph represents operations performed by a neural network during training. It allows tracking the flow of data through the network, enabling backward propagation to compute gradients needed for updating weights. In neural network training, a computation graph helps in calculating the gradient of the loss function with respect to each weight, facilitating optimization algorithms like backpropagation to adjust parameters iteratively."
+  },
+  {
+    "question": "What is the vanishing gradient problem and which activation functions suffer from it?",
+    "ground_truth_answer": "The vanishing gradient problem occurs when gradients become extremely small as they are backpropagated through many layers, making early-layer weights update very slowly. Sigmoid and tanh suffer from this because their gradients approach zero in their saturation regions, unlike ReLU.",
+    "naive_rag_answer": "The vanishing gradient problem occurs when gradients become too small during backpropagation, making it difficult to update weights effectively. This issue affects activation functions like Sigmoid and Tanh, where large inputs lead to very small output derivatives, causing slow convergence. Rectified Linear Unit (ReLU) avoids this problem by having a constant derivative for positive inputs, thus maintaining larger gradients throughout the network.",
+    "contextual_retrieval_answer": "The vanishing gradient problem occurs when gradients become extremely small during backpropagation, making it difficult or impossible to train deep neural networks effectively. This issue typically affects activation functions like sigmoid and tanh, where their derivatives approach zero as the input value moves away from zero. Rectified Linear Unit (ReLU) activations avoid this problem by having a constant derivative of 1 for positive inputs, thus allowing deeper networks without encountering vanishing gradients."
+  },
+  {
+    "question": "How does L2 regularisation reduce overfitting in neural networks?",
+    "ground_truth_answer": "L2 regularisation adds a penalty term λ‖w‖² to the loss function that discourages large weight values. This shrinks weights toward zero during gradient descent, reducing the model's complexity and improving generalisation to unseen data.",
+    "naive_rag_answer": "L2 regularization adds a penalty term proportional to the square of the magnitude of the model's parameters during training. This encourages smaller parameter values, which helps in reducing overfitting by making the model simpler and less complex.",
+    "contextual_retrieval_answer": "L2 regularization adds a penalty term proportional to the square of the magnitude of the model's parameters during training. This encourages smaller parameter values, which helps in reducing overfitting by penalizing complex models that fit noise in the data rather than capturing underlying patterns."
+  },
+  {
+    "question": "What is mini-batch stochastic gradient descent (SGD)?",
+    "ground_truth_answer": "Mini-batch SGD updates weights using the gradient computed over a small random subset (mini-batch) of training examples rather than the full dataset (batch) or a single example (online). It balances computational efficiency with gradient noise, which can help escape local minima.",
+    "naive_rag_answer": "Mini-batch stochastic gradient descent (SGD) involves updating the model parameters after processing a small batch of data instead of an entire dataset at once. This method reduces computation time compared to full-batch SGD but may not always converge as quickly due to less information being processed at each step.",
+    "contextual_retrieval_answer": "Mini-batch SGD involves updating the parameters after processing a small batch of data instead of an entire dataset at once."
+  },
+  {
+    "question": "What is the difference between the input layer, hidden layers, and the output layer in a feedforward network?",
+    "ground_truth_answer": "The input layer receives the raw feature vectors. Hidden layers apply learned linear transformations followed by non-linear activations to extract increasingly abstract representations. The output layer produces the final prediction — a class probability via softmax for classification or a continuous value for regression.",
+    "naive_rag_answer": "The input layer receives raw data from the environment or user inputs. The hidden layers process information within the network, transforming it into intermediate representations. The output layer produces final predictions or decisions based on the processed information.",
+    "contextual_retrieval_answer": "In a feedforward neural network, there are typically three main types of layers:\n\n- **Input Layer**: This is where the raw data or features are presented to the model.\n- **Hidden Layers**: These are intermediate layers that process information before it reaches the output layer. They contain neurons that perform computations based on their connections to other neurons.\n- **Output Layer**: This is the final layer that produces the prediction or classification result after processing through multiple hidden layers. It uses an activation function like ReLU or tanh to introduce non-linearity into the model's decision-making process.\n\nThe input layer does not have any weights or biases associated with it; its purpose is simply to receive the input data. The output layer, however, includes both weights and biases, making it distinct from the input layer."
+  },
+  {
+    "question": "Why are non-linear activation functions necessary in multi-layer neural networks?",
+    "ground_truth_answer": "Without non-linear activations, stacking multiple linear layers is equivalent to a single linear transformation, providing no additional expressive power. Non-linear activation functions allow the network to learn non-linear decision boundaries and represent complex functions such as XOR.",
+    "naive_rag_answer": "Without non-linear activation functions, a multilayer network reduces to a single-layer network due to linearity, losing its ability to capture complex patterns and relationships in data. Non-linear activations allow neural networks to learn more intricate features and representations beyond what can be achieved with simple linear transformations.",
+    "contextual_retrieval_answer": "Non-linear activation functions are essential in multi-layer neural networks because they allow the network to learn more complex representations beyond what can be achieved with linear transformations alone. Without them, the network would essentially reduce to a simpler form similar to a single-layer network, losing its ability to capture intricate patterns and relationships in the data."
+  }
+]

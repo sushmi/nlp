@@ -40,4 +40,5 @@ dependencies = [
     "torchtext==0.18.0",
     "transformers>=5.1.0",
     "trl>=0.29.0",
+    "watchdog>=6.0.0",
 ]

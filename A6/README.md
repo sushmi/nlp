@@ -83,7 +83,7 @@ After cleaning the ~261 k-char raw extraction becomes ~64 k chars of clean prose
 
 | Component               | Model                                                               |
 | ----------------------- | ------------------------------------------------------------------- |
-| **Retriever**           | `sentence-transformers/all-MiniLM-L6-v2` (384-dim dense embeddings) |
+| **Retriever**           | `sentence-transformers/all-mpnet-base-v2` (768-dim dense embeddings) |
 | **Vector store**        | FAISS flat L2 index                                                 |
 | **Generator**           | `Qwen/Qwen2.5-1.5B-Instruct` (open-source, runs locally on CPU/MPS) |
 | **Contextual enricher** | Rule-based: section header extracted from document structure        |
@@ -94,7 +94,7 @@ After cleaning the ~261 k-char raw extraction becomes ~64 k chars of clean prose
 Standard retrieval-augmented generation pipeline:
 
 1. **Chunk** — split cleaned document into 500-char windows with 50-char overlap.
-2. **Embed** — encode each chunk with `all-MiniLM-L6-v2`.
+2. **Embed** — encode each chunk with `all-mpnet-base-v2`.
 3. **Index** — store embeddings in a FAISS flat L2 index.
 4. **Retrieve** — at query time, embed the question and find the top-3 nearest chunks.
 5. **Generate** — pass the retrieved chunks as context to the language model and return its answer.
@@ -118,7 +118,7 @@ The enriched chunk is embedded and stored in a separate FAISS index; retrieval a
 
 ### 2.3 Evaluation
 
-All 20 QA pairs are passed through both pipelines. Results are saved to `answer/response-st-xxxxxx-chapter-6.json` in the format required by the assignment:
+All 20 QA pairs are passed through both pipelines. Results are saved to `answer/response-st126526-chapter-6.json` in the format required by the assignment:
 
 ```json
 [
@@ -139,14 +139,13 @@ ROUGE-1, ROUGE-2, and ROUGE-L F1 scores (stemmed) are computed between each gene
 
 | Method               | ROUGE-1 | ROUGE-2 | ROUGE-L |
 | -------------------- | ------- | ------- | ------- |
-| Naive RAG            | —       | —       | —       |
-| Contextual Retrieval | —       | —       | —       |
+| Naive RAG            | 0.4372  | 0.1954  | 0.3362  |
+| Contextual Retrieval | 0.4417  | 0.1806  | 0.3334  |
 
-
-*(Fill in after running the evaluation cell in the notebook.)*
+*Scores are F1 (stemmed), averaged over 20 QA pairs.*
 
 **Discussion:**
-Contextual Retrieval is expected to outperform Naive RAG on ROUGE scores because the section-level context prefix helps the retriever locate chunks whose *role in the document* matches the question, not just their local wording. Naive RAG can miss relevant chunks when the question uses different vocabulary from the chunk, because the dense embeddings of bare chunks carry no positional or topical context.
+Naive RAG and Contextual Retrieval achieve very similar ROUGE scores on this dataset. Contextual Retrieval edges ahead on ROUGE-1 (+0.0045), while Naive RAG scores slightly higher on ROUGE-2 (+0.0148) and ROUGE-L (+0.0028). The near-parity is expected given that the retriever here uses TF-IDF, which already exploits exact lexical overlap — the same signal that ROUGE measures. Contextual Retrieval's advantage is more pronounced with dense embedding retrievers on paraphrastic questions, where the section-level prefix gives the retriever topical grounding beyond local chunk wording.
 
 ---
 
@@ -164,7 +163,7 @@ Users can ask any question about Chapter 6 in natural language. The app maintain
 
 Each user query goes through the same Contextual Retrieval pipeline described in Task 2.2:
 
-1. Query is embedded with `all-MiniLM-L6-v2`.
+1. Query is embedded with `all-mpnet-base-v2`.
 2. Top-3 enriched chunks are retrieved from the FAISS index.
 3. Retrieved context is passed to `Qwen/Qwen2.5-1.5B-Instruct` to generate the answer.
 
@@ -195,7 +194,7 @@ uv run python A6/code/generate_results.py
 streamlit run A6/app/app.py
 ```
 
-**Offline model loading** — `all-MiniLM-L6-v2` is loaded from the local HuggingFace cache. The environment variables `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` are set automatically in the notebook and scripts to prevent network requests when behind a proxy.
+**Offline model loading** — `all-mpnet-base-v2` and `Qwen2.5-1.5B-Instruct` are loaded from the local HuggingFace cache via `snapshot_download(model_id, local_files_only=True)`, which resolves the absolute local snapshot path and completely bypasses any network activity.
 
 ---
 
@@ -215,3 +214,6 @@ streamlit run A6/app/app.py
 | `scikit-learn`             | TF-IDF retrieval (fallback)      |
 
 
+# Screnshots of Chat UI
+
+<img src="./images/what is neural network.png" width=700>
