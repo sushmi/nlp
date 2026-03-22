@@ -138,6 +138,10 @@ Because history changed, others should:
 
 ```sh
 
+ source .venv/bin/activate
+
+ cd <directory>
+
 mkdir app code data imgages models resources
 touch README.md
 touch NOTES.md
