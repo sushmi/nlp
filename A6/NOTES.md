@@ -118,3 +118,149 @@ Or after pinning: `rm -rf .venv` then `uv sync`.
 ### Resolver hints (`python_full_version == '3.14'`, `win32`, …)
 
 `uv` can resolve for **all** Python versions allowed by `requires-python`. Tightening helps, e.g. `requires-python = ">=3.11,<3.14"`, if you hit odd cross-platform resolution noise.
+
+## QA
+
+### what is FAISS ?
+
+FAISS (Facebook AI Similarity Search) is a library developed by Meta for efficient similarity search and clustering of dense vectors.
+
+Core Idea
+
+Given a large collection of vectors, FAISS lets you quickly find the k nearest neighbors to a query vector — much faster than brute-force comparison.
+
+Key Concepts
+
+- Indexing: Vectors are stored in an index structure that trades some accuracy for speed
+- Similarity metrics: Supports L2 (Euclidean) distance and inner product (cosine similarity)
+- Scalability: Handles billions of vectors efficiently
+
+Common Index Types
+
+|Index	|Speed	|Accuracy	|Memory|
+|--------|--------|-----------|------|
+|IndexFlatL2| 	Slow (exact)	| 100%	| High|
+|IndexIVFFla| Fast (approximate)	| ~95%	|Medium|
+|IndexIVFPQ	| Fastest	| ~90%	| Low|
+
+Why It Matters for NLP/RAG
+
+In your A6 notebook (RAG assignment), FAISS is likely used to:
+
+Store embeddings — encode documents as dense vectors
+Retrieve chunks — find top-k most similar passages to a query
+Enable semantic search — go beyond keyword matching
+Quick Example
+```python
+import faiss
+import numpy as np
+
+dim = 768  # embedding size (e.g., BERT)
+index = faiss.IndexFlatL2(dim)
+
+# Add document embeddings
+index.add(doc_embeddings)  # shape: (N, 768)
+
+# Search
+distances, indices = index.search(query_embedding, k=5)
+```
+
+It's essentially the backbone of vector databases like Pinecone, Weaviate, and ChromaDB — those are largely FAISS with added infrastructure.
+
+
+### is faiss is embedding model?
+
+No, FAISS is not an embedding model.
+
+The Difference
+||Role	|Example|
+|-|-|-|
+|Embedding Model	|Converts text → vector	|text-embedding-ada-002, sentence-transformers|
+|FAISS	|Stores & searches vectors	|finds nearest vectors fast|
+How They Work Together
+
+`Text → [Embedding Model] → Vector → [FAISS Index] → Similarity Search`
+
+- Embedding model does the "understanding" — turns text into numbers
+- FAISS does the "searching" — finds similar vectors efficiently
+
+Analogy
+-Embedding model = a translator (converts meaning into numbers)
+-FAISS = a search engine (finds similar numbers fast)
+
+FAISS has no idea what text means — it only works with vectors that an embedding model already produced.
+
+### why the chunks generate are bogus like ffiUffisffiiffinffigffi ffieffimffibffieffidffidffiiffinffigffisffi ffiaffilffilffioffiwffisffi ffinffieffiuffirffiaffilffi ffilffiaffinffigffiuffiaffigffieffi ffimffioffidffieffilffisffi ffitffioffi ffigffieffinffieffirffiaffilffiiffizffieffi ffibffieffitffitffieffirffi ffitffioffi ffiuffinffisffieffieffinffi
+
+using PyMuPDFLoader and the PDF has a ligature encoding problem.
+
+What's Happening
+The PDF uses typographic ligatures (ffi, fi, fl) as single glyphs. PyMuPDF can't decode the font mapping, so it outputs the ligature code ffi before every character:
+
+
+"Using" → "ffiUffisffiiffinffigffi"
+Fix: Switch PDF Loader
+Option 1 — Use pypdf (simplest):
+
+
+from langchain_community.document_loaders import PyPDFLoader
+
+loader = PyPDFLoader('../data/6.pdf')
+document = loader.load()
+Option 2 — Use pdfplumber (best for complex PDFs):
+
+
+from langchain_community.document_loaders import PDFPlumberLoader
+
+loader = PDFPlumberLoader('../data/6.pdf')
+document = loader.load()
+Option 3 — Post-process to strip ligatures (quick patch):
+
+
+import re
+
+def clean_ligatures(text):
+    return re.sub(r'ffi|ffl|fi|fl|ff', lambda m: m.group().replace('ffi','').replace('ffl','').replace('fi','').replace('fl','').replace('ff',''), text)
+
+# Or simpler — just remove the "ffi" artifacts:
+def clean_text(text):
+    return text.replace('ffi', '').replace('ffl', '').replace('\ufb03', 'ffi').replace('\ufb04', 'ffl')
+Recommended
+Try Option 1 (PyPDF) first — it handles Stanford NLP PDFs well. If still garbled, try pdfplumber.
+
+
+### why do we need lgatures and what is it explain
+
+What are Ligatures?
+Ligatures are single glyphs that replace two or more letters that look awkward when printed side by side.
+
+Why They Exist (Typography)
+Certain letter combinations collide visually when printed:
+
+
+f + i  →  the dot of 'i' crashes into the top of 'f'
+f + l  →  same problem
+f + f + i  →  triple collision
+
+So typographers designed merged glyphs:
+
+|Letters	|Ligature	|Why|
+|-|-|-|
+|f + i	|ﬁ	|f hook overlaps i dot|
+|f + l	|ﬂ	|f hook overlaps l ascender|
+|f + f + i	|ﬃ	|combined mess|
+|f + t	|ﬅ	|old style typography|
+
+The PDF Problem
+
+PDFs store ligatures as single special Unicode characters (e.g., ﬁ = U+FB01). When a PDF is exported with a bad font encoding, extractors like PyMuPDF see:
+
+The ligature character ﬁ but can't map it → outputs the ligature name ffi as raw text
+This gets prepended to every character → garbled output
+
+"finding" → f+i = ﬁ ligature → extraction fails → "ffifinffidffiffinffigffi"
+
+In Short
+- Ligatures = a print/design feature for clean typography
+- They are invisible to readers in well-rendered text
+- They become a problem only when software extracts text from PDFs without proper font mapping
