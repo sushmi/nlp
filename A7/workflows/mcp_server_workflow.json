@@ -1,0 +1,107 @@
+
+{
+  "name": "MCP Server",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "mcp-server"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        -240
+      ],
+      "id": "8c494450-9bd2-4d8b-8fc3-24da444883cf",
+      "name": "MCP Server Trigger",
+      "webhookId": "d5511163-8e61-4ae5-a931-6e98875b2495"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        16
+      ],
+      "id": "1b94c714-83de-4303-9289-2a1683893002",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "description": "Formats text to uppercase"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        0
+      ],
+      "id": "f9e0e0d5-4267-4f9e-9608-a2e1359de1f9",
+      "name": "Text Formatter"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        0,
+        32
+      ],
+      "id": "59e60c73-8fc6-4e19-bdc8-7a64339ddb49",
+      "name": "Calculator"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Date & Time": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Formatter": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "8167dd64-7dea-4427-8b81-22c2ac45a61e",
+  "meta": {
+    "instanceId": "39df2bbc5444f7dc93759de7308a20abb551f9c54569ecea2c2df63cfa5b3edf"
+  },
+  "id": "tBoqvaFXi5O8VKFo",
+  "tags": []
+}

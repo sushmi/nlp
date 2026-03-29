@@ -31,3 +31,10 @@ practice/
 
 # skip quiz files
 quiz/
+
+
+# skip secrets
+secrets/
+
+# skip docker data
+A7/docker/*_data/

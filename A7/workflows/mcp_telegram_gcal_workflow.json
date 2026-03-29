@@ -1,0 +1,226 @@
+{
+  "name": "Telegram + Google Calendar Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}\n",
+        "options": {
+          "systemMessage": "You are a smart scheduling assistant connected to Google Calendar.\n\nWhen creating Google Calendar events, use ONLY these parameter names:\n- Summary: the event title\n- Description: the event title and description\n- Start: start datetime (ISO format, e.g. 2026-03-30T09:00:00+07:00)\n- End: end datetime (ISO format, e.g. 2026-03-30T10:00:00+07:00)\n\nDO NOT CREATE any event if text is hi or hello or empty , respond how can I help you with calendar event?"
+        }
+      },
+      "id": "9917e3ca-2482-4db2-99ec-07b68b7e5e85",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        288,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "347a2c98-85ff-47db-8d76-28276fa7dca2",
+      "name": "Telegram Trigger",
+      "webhookId": "c3503d42-885f-48e3-ba1c-8f62748d44dc",
+      "credentials": {
+        "telegramApi": {
+          "id": "kNTWnSzCQTUwL29R",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        160,
+        208
+      ],
+      "id": "7cf79c53-9e65-46c7-9fbe-33bc0f3ce03c",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "9ke8NKfxW8xzjPKm",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        0
+      ],
+      "id": "14150aab-72e1-4a1c-a270-30779818c2b3",
+      "name": "Send a text message",
+      "webhookId": "526ee948-b6b5-4aa1-8ac9-349ee860755d",
+      "credentials": {
+        "telegramApi": {
+          "id": "kNTWnSzCQTUwL29R",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "st126526@ait.asia",
+          "mode": "list",
+          "cachedResultName": "st126526@ait.asia"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "useDefaultReminders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Use_Default_Reminders', ``, 'boolean') }}",
+        "additionalFields": {
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        624,
+        240
+      ],
+      "id": "8a9ae1d6-828d-41db-9c18-f0c9e2d5af88",
+      "name": "Create an event in Google Calendar",
+      "notesInFlow": false,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "X7FknuBZb3SQSAwx",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "st126526@ait.asia",
+          "mode": "list",
+          "cachedResultName": "st126526@ait.asia"
+        },
+        "limit": 10,
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', ``, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', ``, 'string') }}",
+        "options": {
+          "fields": "summary"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        256
+      ],
+      "id": "ecd755b8-b943-4957-b566-413c5c8b2773",
+      "name": "Get many events in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "X7FknuBZb3SQSAwx",
+          "name": "Google Calendar account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Create an event in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d33f78e3-283c-4dab-972d-d59c8ebba673",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "39df2bbc5444f7dc93759de7308a20abb551f9c54569ecea2c2df63cfa5b3edf"
+  },
+  "id": "eN8CFFCtHQ15eaO1",
+  "tags": []
+}

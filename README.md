@@ -27,6 +27,18 @@ LSTM Language Model
 [A4 Readme](A4/README.md)
 
 
+## A5: 
+
+[A5 Readme](A5/README.md)
+
+## A6: 
+
+[A6 Readme](A6/README.md)
+
+## A7: 
+
+[A7 Readme](A7/README.md)
+
 
 # PyTorch on Apple Silicon 
 

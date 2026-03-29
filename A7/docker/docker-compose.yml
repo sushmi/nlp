@@ -1,0 +1,26 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      - N8N_HOST=0.0.0.0
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=${NGROK_URL}
+      - GENERIC_TIMEZONE=Asia/Bangkok
+      - TZ=Asia/Bangkok
+      - NODE_ENV=production
+      - N8N_SECURE_COOKIE=false
+      - N8N_CONCURRENCY_PRODUCTION_LIMIT=10
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:
+    external: true
+    name: docker_n8n_data
